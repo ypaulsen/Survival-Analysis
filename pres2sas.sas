@@ -20,17 +20,16 @@ run;
 *\Create new variable called 'deadnum' with deaths recorded as 1s and 0s;
 data lung;
 	set lung; 
-	deadnum  = input(dead, 1.);             *\Create new variable;
-	if dead = 'dead' then deadnum = 1;      *\Assign values to new variable;
-	else deadnum = 0;
+	dead_int  = input(dead_int, 1.);             *\Create new variable;
+	if dead = 'dead' then dead_int = 1;      *\Assign values to new variable;
+	else dead_int = 0;
 run;
 
 *\Proc lifetest; 
 proc lifetest data=lung method=km plots=survival(cl)
 	graphics outsurv=a; 
-	time t*deadnum(0); 
+	time t*dead_int(0); 
 	strata therapy; 
-	symbol1 color=black line=1;
-	symbol2 color=black line=2;
 run; 
+
 
