@@ -1,7 +1,10 @@
-/* BSTA 665 Presentation #2 code*/
+/*Survival analysis presentation*/
 
 
-/*Import data from local drive;*/
+/*************************************************/
+/*Import data and preprocessing steps            */
+/*************************************************/
+
 proc import datafile = 'C:/Users/yalep/Desktop/School/Classes/Bsta 665/Presentations/Presentation 2/valung.csv'
   out = lungs 
   dbms = CSV;
@@ -42,6 +45,22 @@ data lung;
 	else prior_int = 0;
 run;
 
+
+
+/*************************************************/
+/*************************************************/
+
+
+
+
+
+
+
+/*************************************************/
+/* PROC Lifetest                                 */ 
+/*************************************************/
+
+
 /*Proc lifetest*/    
 proc lifetest data=lung method=km plots=survival(cl)
 	graphics outsurv=a; 
@@ -61,8 +80,83 @@ Coviariates: kps diagtime age prior
 proc lifetest data=lung method=km plots=(hazard(cl), survival(cl), ls, lls)
 	graphics; /* ls for cummulative hazard, lls for proportional hazards */
 	time t*dead_int(0);
-	strata prior_int/ group=cell; /* test of fin within race */
+	strata prior_int/ group=cell; /* test of cell within prior_int */
 	test kps diagtime age prior_int;
 run;
 
+/***********************************************/
+/* Graphically checking the distribution of Y. */
+/*                                             */
+/***********************************************/
+/* Below analyses are unnecessary in this case */
+/* since plots above indicate exp works here.  */
 
+/*Generate data*/  
+data a2;
+	set a;
+	s = survival;
+	logH = log(-log(s));
+	lnorm = probit(1-s);
+	logit = log(s/(1-s));
+	ltime = log(t);
+run;
+
+*proc print data=a2; 
+*run; 
+
+/*logit for log-logistic, logH for weibull and lnorm for log-normal distribution */
+proc gplot data=a2;
+	symbol1 i=join width=2 value=triangle c=steelblue;
+	symbol2 i=join width=2 value=circle c=grey;
+	plot logit*ltime=therapy logH*ltime=therapy lnorm*ltime=therapy; 
+run;
+
+/*                                            */
+/**********************************************/
+
+
+
+/**********************************************/
+/*PROC PHREG                                  */
+/**********************************************/
+
+/* Full model with 3 estimates for ties; breslow is default */
+proc phreg data=lung;
+	class cell;
+    model t*dead_int(0) = kps diagtime age prior_int cell/ 	
+	ties=breslow;
+run;
+
+proc phreg data=lung;
+	class cell;
+    model t*dead_int(0) = kps diagtime age prior_int cell/ 
+	ties=efron;
+run;
+
+proc phreg data=lung;
+	class cell;
+    model t*dead_int(0) = kps diagtime age prior_int cell/ 
+	ties=exact;
+run;
+
+/* Full model, efron method, with backwards selection               */
+/*                                                                  */
+/* conduct model selction with efron method to save computation time*/ 
+
+proc phreg data=lung;
+	class cell;
+    model t*dead_int(0)=kps diagtime age prior_int cell/ 
+	ties=efron selection=backward;
+run;
+
+
+/* Fit the *final* model with exact method*/ 
+
+proc phreg data=lung;
+	class cell;
+    model t*dead_int(0)=kps cell/ 
+	ties=exact;
+run;
+
+proc print data=lung; 
+run; 
