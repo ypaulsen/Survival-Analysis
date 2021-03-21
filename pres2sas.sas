@@ -1,15 +1,25 @@
 /* SAS Code                                            */
 
-/*Survival analysis presentation                       */
-
+/* The following is code I wrote for a presentation in */
+/* Survival Analysis. It contains a proportional       */
+/* hazards regression analysis carried out in SAS.     */
+/*                                                     */
+/* The dataset contains information about 137 lung     */
+/* cancer patients with four disparate types of cancer */ 
+/* cells each patient was treated with a standard      */
+/* therapy or an experimental one, and several         */
+/*  covariates are included.                           */   
 
 /*******************************************************/
 /*Import data and preprocessing steps                  */
 /*******************************************************/
 
-proc import datafile = 'C:/Users/yalep/Desktop/School/Classes/Bsta 665/Presentations/Presentation 2/valung.csv'
-  out = lungs 
-  dbms = CSV;
+
+filename csvFile 
+	url "https://github.com/ypaulsen/Survival-Analysis/raw/main/valung.csv";
+
+proc import datafile=csvFile 
+	out=valung replace dbms=csv; 
 run;
 
 /*Data structure:*/ 
@@ -27,11 +37,11 @@ prior {Yes No}
 
 /*Rename*/ 
 data lung; 
-	set lungs; 
+	set valung; 
 run; 
 
 /*Look at data*/
-proc print data=lung; 
+proc print data=valung; 
 run; 	
 
 /*Changing variables*/ 
@@ -47,13 +57,12 @@ data lung;
 	else prior_int = 0;
 run;
 
-
+/*Look at data*/
+proc print data=lung; 
+run;
 
 /*******************************************************/
 /*******************************************************/
-
-
-
 
 
 
@@ -86,12 +95,18 @@ proc lifetest data=lung method=km plots=(hazard(cl), survival(cl), ls, lls)
 	test kps diagtime age prior_int;
 run;
 
+/*                                                     */
+/*******************************************************/
+
+
+
 /*******************************************************/
 /* Graphically checking the distribution of Y.         */
 /*                                                     */
 /*******************************************************/
-/* Below analyses are unnecessary in this case         */
-/* since plots above indicate exp works here.          */
+/* Below analyses are unnecessary in this case since   */
+/* the plots above show that exp works here.           */
+/* The code is included here for example puroses.      */
 
 /*Generate data*/  
 data a2;
