@@ -28,11 +28,11 @@ treatment: therapy
 cancer type: cell = {Squamous, Small, Large, Adeno} 
 time: t {time in days}
 outcome: dead {dead, censored} 
-Coviariates: 
-Numeric: 
-kps diagtime age 
-Other: 
-prior {Yes No}
+Covariates: 
+  Numeric: 
+    kps diagtime age 
+  Other: 
+    prior {Yes No}
 */
 
 /*Rename*/ 
@@ -44,7 +44,7 @@ run;
 proc print data=valung; 
 run; 	
 
-/*Changing variables*/ 
+/*Change some variables for analysis.*/ 
 /*Create new variable called 'dead_int' with "dead" recorded as 1 and "censored" as 0.*/
 /*Create new variable called 'prior_int' with "Yes" recorded as 1 and "No" as 0.*/
 data lung;
@@ -79,7 +79,7 @@ proc lifetest data=lung method=km plots=survival(cl)
 	strata therapy; 
 run; 
 
-/*
+/* Data:  
 treatment: therapy 
 cancer type: cell 
 time: t 
@@ -158,7 +158,7 @@ proc phreg data=lung;
 run;
 
 /* Full model, efron method, with backwards selection.*/
-/* Conduct model selction with efron method to save computation time.*/ 
+/* Conduct model selection with efron method to save computation time on large datasets.*/ 
 
 proc phreg data=lung;
 	class cell;
@@ -175,5 +175,4 @@ proc phreg data=lung;
 	ties=exact;
 run;
 
-proc print data=lung; 
-run; 
+ 
