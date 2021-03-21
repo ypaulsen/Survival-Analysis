@@ -1,4 +1,4 @@
-/* SAS Code                                            */
+/* Proportional hazards regression in SAS              */
 
 /* The following is code I wrote for a presentation in */
 /* Survival Analysis. It contains a proportional       */
@@ -6,7 +6,7 @@
 /*                                                     */
 /* The dataset contains information about 137 lung     */
 /* cancer patients with four disparate types of cancer */ 
-/* cells each patient was treated with a standard      */
+/* cells. Each patient was treated with a standard     */
 /* therapy or an experimental one, and several         */
 /*  covariates are included.                           */   
 
