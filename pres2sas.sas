@@ -1,9 +1,11 @@
-/*Survival analysis presentation*/
+/* SAS Code                                            */
+
+/*Survival analysis presentation                       */
 
 
-/*************************************************/
-/*Import data and preprocessing steps            */
-/*************************************************/
+/*******************************************************/
+/*Import data and preprocessing steps                  */
+/*******************************************************/
 
 proc import datafile = 'C:/Users/yalep/Desktop/School/Classes/Bsta 665/Presentations/Presentation 2/valung.csv'
   out = lungs 
@@ -47,8 +49,8 @@ run;
 
 
 
-/*************************************************/
-/*************************************************/
+/*******************************************************/
+/*******************************************************/
 
 
 
@@ -56,9 +58,9 @@ run;
 
 
 
-/*************************************************/
-/* PROC Lifetest                                 */ 
-/*************************************************/
+/*******************************************************/
+/* PROC Lifetest                                       */ 
+/*******************************************************/
 
 
 /*Proc lifetest*/    
@@ -84,12 +86,12 @@ proc lifetest data=lung method=km plots=(hazard(cl), survival(cl), ls, lls)
 	test kps diagtime age prior_int;
 run;
 
-/***********************************************/
-/* Graphically checking the distribution of Y. */
-/*                                             */
-/***********************************************/
-/* Below analyses are unnecessary in this case */
-/* since plots above indicate exp works here.  */
+/*******************************************************/
+/* Graphically checking the distribution of Y.         */
+/*                                                     */
+/*******************************************************/
+/* Below analyses are unnecessary in this case         */
+/* since plots above indicate exp works here.          */
 
 /*Generate data*/  
 data a2;
@@ -111,16 +113,17 @@ proc gplot data=a2;
 	plot logit*ltime=therapy logH*ltime=therapy lnorm*ltime=therapy; 
 run;
 
-/*                                            */
-/**********************************************/
+/*                                                     */
+/*******************************************************/
 
 
 
-/**********************************************/
-/*PROC PHREG                                  */
-/**********************************************/
+/*******************************************************/
+/*PROC PHREG                                           */
+/*******************************************************/
 
-/* Full model with 3 estimates for ties; breslow is default */
+/* Full model with 3 estimates for ties      */
+/* Breslow is default, but generally inferior*/
 proc phreg data=lung;
 	class cell;
     model t*dead_int(0) = kps diagtime age prior_int cell/ 	
@@ -139,9 +142,8 @@ proc phreg data=lung;
 	ties=exact;
 run;
 
-/* Full model, efron method, with backwards selection               */
-/*                                                                  */
-/* conduct model selction with efron method to save computation time*/ 
+/* Full model, efron method, with backwards selection.*/
+/* Conduct model selction with efron method to save computation time.*/ 
 
 proc phreg data=lung;
 	class cell;
@@ -150,7 +152,7 @@ proc phreg data=lung;
 run;
 
 
-/* Fit the *final* model with exact method*/ 
+/* Fit the *final* model with exact method.*/ 
 
 proc phreg data=lung;
 	class cell;
