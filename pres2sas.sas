@@ -7,8 +7,8 @@
 /* The dataset contains information about 137 lung     */
 /* cancer patients with four disparate types of cancer */ 
 /* cells. Each patient was treated with a standard     */
-/* therapy or an experimental one, and several         */
-/*  covariates are included.                           */   
+/* therapy or an experimental one. Several covariates  */
+/* are included.                                       */   
 
 /*******************************************************/
 /*Import data and preprocessing steps                  */
@@ -75,7 +75,7 @@ run;
 /*Proc lifetest*/    
 proc lifetest data=lung method=km plots=survival(cl)
 	graphics outsurv=a; 
-	time t*dead_int(0); /*For lifetest, outcome variable is time*outcome. Here that's t*dead_int(0) where 0 is the condition*/ 
+	time t*dead_int(0); /*For lifetest, outcome variable is time*outcome. Here that's t*dead_int(0) where 0 is the censored condition*/ 
 	strata therapy; 
 run; 
 
