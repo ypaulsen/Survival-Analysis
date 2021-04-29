@@ -12,12 +12,12 @@
 /*Read in the data                                           */
 /*************************************************************/
 data Lymph;
-input Source$ Lymphoma$ Days d;
-if Source = '1' then Source = 'Allo';
-else Source ='Auto';
-if Lymphoma = '1' then Lymphoma = 'Non Hodgkins';
-else Lymphoma ='Hodgkins';
-datalines;
+	input Source$ Lymphoma$ Days d;
+	if Source = '1' then Source = 'Allo';
+	else Source ='Auto';
+	if Lymphoma = '1' then Lymphoma = 'Non Hodgkins';
+	else Lymphoma ='Hodgkins';
+	datalines;
 1 1 28 1 
 1 1 32 1
 1 1 49 1 
@@ -62,7 +62,7 @@ datalines;
 0 0 1290 0
 0 0 1345 0 
 ;  
-
+run;
 
 /*************************************************************/
 /* Compute the Kaplan-Meier estimate of the survival function*/
@@ -86,12 +86,12 @@ proc lifetest data=onepointfive method=nelson plots=survival(cl)
 run;
 
 data a2;
-set a;
-s=survival;
-logH=log(-log(s));
-lnorm=probit(1-s); /* for log normal distribution */
-logit=log(s/(1-s)); /* for log-logistic distribution */
-lDays=log(Days);
+	set a;
+		s=survival;
+		logH=log(-log(s));
+		lnorm=probit(1-s); /* for log normal distribution */
+		logit=log(s/(1-s)); /* for log-logistic distribution */
+		lDays=log(Days);
 run;
 
 proc print data=a2;
@@ -105,12 +105,12 @@ run;
 */
 
 proc sgplot data=a2;
-scatter x=lDays y=lnorm/ group=Source;
+	scatter x=lDays y=lnorm/ group=Source;
 run;
 
 
 proc sgplot data=a2;
-scatter x=lDays y=logit/ group=Source;
+	scatter x=lDays y=logit/ group=Source;
 run;
 
 
@@ -123,7 +123,7 @@ run;
 
 
 proc sgplot data=a2;
-scatter x=Days y=logH/ group=Source;
+	scatter x=Days y=logH/ group=Source;
 run;
 
 ** Life-Table estimation;
