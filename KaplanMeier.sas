@@ -103,7 +103,7 @@ proc sgplot data=a2;
         / group=Source;
 run;
 
-** Life-Table estimation;
+/* Life-Table estimation: Example*/
 proc lifetest data=lymph method=life intervals=10,20,30,40
     plots=(s,h) graphics outsurv=b;
     time Days*d(0);
